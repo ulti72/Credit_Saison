@@ -55,7 +55,7 @@ Point your browser to http://127.0.0.1:5000/card_scheme/verify/ to serach card d
 }
 ```
 ###### Get number of hits:
-* Endpoint: http://127.0.0.1:5000/card_scheme/stats?start=<start>&limit=<limit>
+* Endpoint: 'http://127.0.0.1:5000/card_scheme/stats?start=<start>&limit=<limit>'
 * parameters:  start and limit
 * Response: JSON
 ```
