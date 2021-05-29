@@ -4,8 +4,8 @@ import requests
 
 class TestApi(unittest.TestCase):
     
-    STATS_URL = "http://127.0.0.1:8081/card_scheme/stats?start={start}&limit={limit}"
-    CARD_URL = "http://127.0.0.1:8081/card_scheme/verify/{card_number}"
+    STATS_URL = "http://127.0.0.1:5000/card_scheme/stats?start={start}&limit={limit}"
+    CARD_URL = "http://127.0.0.1:5000/card_scheme/verify/{card_number}"
 
 
 
