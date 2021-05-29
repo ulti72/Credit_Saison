@@ -1,17 +1,10 @@
-from flask import Flask, render_template, url_for , request, Blueprint
+from flask import Flask, render_template, url_for , request
 import requests
-from models import User
-from extension import db
+from flaskapi import app
+from flaskapi.models import User
+from flaskapi import db
 
-app = Flask(__name__)
-
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
-
-
-db.init_app(app)
-
-@app.route('/card_scheme/verify/', methods=['GET','POST'])
+@app.route("/card_scheme/verify/", methods=['GET','POST'])
 def verify():
     card_number= ''
     result = 'true'
@@ -69,7 +62,7 @@ def verify():
 
 @app.route('/card_scheme/verify/<card_number>', methods=['GET'])
 def card_detail(card_number):
-    result = 'true'
+    res = 'true'
     user = User.query.filter_by(card_number=card_number).first()
     if user: 
         print('Getting data from database')
@@ -86,7 +79,15 @@ def card_detail(card_number):
             response.raise_for_status()
             json_data =  response.json()
         except requests.exceptions.HTTPError as errh:
-            result = 'false'
+           
+            return  {
+                'success': 'false',
+                'payload': {
+                'bank': 'not_found',
+                'type': 'not_found',
+                'scheme': 'not_found' 
+                }
+    }
 
         try:
             bank = json_data['bank']['name']
@@ -107,20 +108,22 @@ def card_detail(card_number):
             db.session.commit()
 
     result = {
-        'success': result,
+        'success': res,
         'payload': {
         'bank': bank,
         'type':card_type ,
         'scheme': scheme 
         }
     }
+
     return result 
+
 
 
 @app.route('/card_scheme/stats', methods=['GET'])
 def hits():
-    start = request.args.get('start')
-    lm = request.args.get('limit')
+    start = request.args.get('start') or  1
+    lm = request.args.get('limit') or 10
 
     users_data = User.query.order_by(User.hit_count.desc()).limit(lm).all()
     payload = {} 
@@ -136,7 +139,3 @@ def hits():
        
     }
     return result 
-
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8081,debug=True)
-

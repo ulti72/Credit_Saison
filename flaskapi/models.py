@@ -1,4 +1,4 @@
-from extension import db
+from flaskapi import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
