@@ -1,6 +1,7 @@
-from flask import Flask, render_template , redirect , url_for , request
+from flask import Flask, render_template, url_for , request, Blueprint
 import requests
-from flask_sqlalchemy import SQLAlchemy 
+from models import User
+from extension import db
 
 app = Flask(__name__)
 
@@ -8,15 +9,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 
 
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    bank_name = db.Column(db.String(50))
-    card_type = db.Column(db.String(50))
-    card_number = db.Column(db.String(50))
-    scheme = db.Column(db.String(50))
-    hit_count = db.Column(db.Integer)
+db.init_app(app)
 
 @app.route('/card_scheme/verify/', methods=['GET','POST'])
 def verify():
